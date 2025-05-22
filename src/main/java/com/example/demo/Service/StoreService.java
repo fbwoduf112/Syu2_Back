@@ -3,23 +3,23 @@ package com.example.demo.Service;
 import com.example.demo.dto.StoreRegistrationDTO;
 import com.example.demo.entity.store.QR_Code;
 import com.example.demo.entity.store.Store;
+import com.example.demo.jwt.JwtTokenProvider;
 import com.example.demo.repository.QRCodeRepository;
 import com.example.demo.repository.StoreRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class StoreService {
     private final QRCodeRepository qrCodeRepository;
     private final StoreRepository storeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public StoreService(QRCodeRepository qrCodeRepository, StoreRepository storeRepository, PasswordEncoder passwordEncoder) {
-        this.qrCodeRepository = qrCodeRepository;
-        this.storeRepository = storeRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+
 
     @Transactional // 회원가입
     public Store registerStore(StoreRegistrationDTO storeRegistrationDTO) {
@@ -55,11 +55,13 @@ public class StoreService {
     }
 
     public void createQRCode(Store store){
-        String menuUrl = "/menu/" + store.getStoreId();
+        // QR 코드에 포함될 URL을 지정된 형식 지정.
+        String menuUrl = "/api/Store/Menu?StoreNumber=" + store.getStoreId();
+
 
         // QR 코드 엔티티 생성
         QR_Code qrCode = QR_Code.builder()
-                .QR_Code(menuUrl)
+                .QR_Code(menuUrl) // QR_Code 필드에 menuUrl 저장
                 .store(store)
                 .build();
 
@@ -72,10 +74,13 @@ public class StoreService {
         Store store = storeRepository.findByOwnerEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
 
+
+
         // 비밀번호 검증 로직 (예: BCrypt 사용)
         if (!passwordEncoder.matches(password, store.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+        else jwtTokenProvider.createToken(store.getStoreName());
 
         return store;
     }
