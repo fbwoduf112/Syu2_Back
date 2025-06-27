@@ -41,6 +41,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         log.debug("[JWT Filter] 요청 URI: {}", requestURI);
 
+        if (requestURI.startsWith("/OAuth2/login/kakao")
+                || requestURI.startsWith("/api/oauth2/kakao/login")
+                || requestURI.startsWith("/login/naver")
+                || requestURI.startsWith("/api/oauth2/naver/login")) {
+            log.debug("[JWT Filter] 로그인 경로 감지됨. 필터 통과: {}", requestURI);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
         // 쿠키 정보 로깅
         if (request.getCookies() != null) {
             log.debug("[JWT Filter] 쿠키 개수: {}", request.getCookies().length);

@@ -52,6 +52,7 @@ public class KakaoLoginController {
         String accessToken = kakaoService.getAccessTokenFromKakao(code);
         KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(accessToken);
         String kakaoId = userInfo.getId().toString();
+
         Optional<Customer> optionalCustomer = customerRepository.findByEmail(kakaoId);
 
         if (optionalCustomer.isEmpty()) {
