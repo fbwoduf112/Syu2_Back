@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +33,11 @@ public class ReviewService {
     public List<UnreviewedStatisticsDto> getUnreviewedStatisticsByCustomer(Customer customer) {
         List<CustomerStatistics> unreviewedList = customerStatisticsRepository.findByCustomerAndReviewedFalse(customer);
 
+        Set<String> existingMenuNames = storeMenuRepository.findAllMenuNames();
+
         return unreviewedList.stream()
                 .filter(stat -> !"UserPointUsedOrNotUsed".equals(stat.getOrderDetails())) // 이 조건을 추가
+                .filter(stat -> existingMenuNames.contains(stat.getOrderDetails()))
                 .map(stat -> new UnreviewedStatisticsDto(
                         stat.getId(),
                         stat.getStore().getStoreName(),

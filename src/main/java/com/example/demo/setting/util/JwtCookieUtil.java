@@ -16,8 +16,6 @@ public class JwtCookieUtil {
     public static ResponseCookie createAccessTokenCookie(String jwt) {
         return ResponseCookie.from(COOKIE_NAME, jwt)
                 .httpOnly(true)
-                .secure(true) // HTTPS 환경에서 필수
-                .domain("igo.ai.kr") // 도메인 명시적 설정
                 .path("/")
                 .maxAge(MAX_AGE)
                 .sameSite("Lax")
@@ -27,7 +25,6 @@ public class JwtCookieUtil {
     public ResponseCookie createRefreshTokenCookie(String refreshToken, long expirationMillis) {
         return ResponseCookie.from(REFRESH_TOKEN_NAME, refreshToken)
                 .httpOnly(true)
-                .secure(true)  // 추가된 부분
                 .path("/")
                 .maxAge(expirationMillis / 1000) // 밀리초를 초로 변환
                 .sameSite("Lax")
@@ -37,8 +34,6 @@ public class JwtCookieUtil {
     public static ResponseCookie deleteAccessTokenCookie() {
         return ResponseCookie.from(COOKIE_NAME, "")
                 .httpOnly(true)
-                .secure(true) // HTTPS 환경에서 필수
-                .domain("igo.ai.kr") // 도메인 명시적 설정
                 .path("/")
                 .maxAge(0) // 즉시 삭제
                 .sameSite("Lax")

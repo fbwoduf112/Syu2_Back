@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
     // 메뉴 이름으로 검색
@@ -27,4 +28,9 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
 
     @Query("SELECT DISTINCT m.category FROM StoreMenu m WHERE m.store = :store AND m.category IS NOT NULL")
     List<String> findCategoriesByStore(@Param("store")Store store);
+
+    boolean existsByMenuName(String orderDetails);
+
+    @Query("SELECT m.menuName FROM StoreMenu m")
+    Set<String> findAllMenuNames();
 }
