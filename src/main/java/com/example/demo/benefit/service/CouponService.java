@@ -38,7 +38,7 @@ public class CouponService {
         LocalDateTime issueStartTime = requestDto.getIssueStartTime();
         log.info("쿠폰 생성 시간" + issueStartTime);
 
-        // 미래의 특정 시간으로 발급이 예약된 경우는, 해당 시간이 그대로 유지됩니다.
+        // 미래의 특정 시간으로 발급이 예약된 경우는, 해당 시간이 그대로 유지
         if (issueStartTime == null || !issueStartTime.isAfter(now)) {
             issueStartTime = now;
         }

@@ -66,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.debug("[JWT Filter] 토큰 무효화 상태: {}", isTokenInvalidated);
 
             if (isValidJwt && !isTokenInvalidated) {
-                // 토큰이 유효하고 무효화되지 않은 경우에만 인증 정보를 설정합니다.
+                // 토큰이 유효하고 무효화되지 않은 경우에만 인증 정보를 설정
                 String userId = jwtTokenProvider.getUserId(token);
                 String role = jwtTokenProvider.getRole(token);
                 log.info("[JWT Filter] 유효한 토큰 - 사용자: {}, 역할: {}", userId, role);
